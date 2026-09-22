@@ -19,9 +19,12 @@ Combine four low-cost signals rather than relying on one, since each alone is a 
 Note: the MQ-135 is a cheap metal-oxide sensor, not a precision CO2 meter — treat its output as a relative trend (rising/falling), not an absolute ppm reading. A real NDIR CO2 sensor would be more accurate but costs $20+, blowing the budget for what it adds.
 
 ## Stirring mechanism
-Magnetic auto-stirring cup approach:
-- Small motor (N20 gear motor or repurposed PC fan motor) spins a magnet below/beside the jar.
-- A PTFE-coated or food-safe stir bar (or DIY magnet in a sealed sleeve) sits in the starter and follows the rotating field.
+Magnetic auto-stirring, but with a wall-scraper, not a plain stir bar:
+- Sourdough is thick and sticky — it clings to the jar walls and won't flow back to a center-spinning stir bar the way a thin liquid would. A bare magnetic stir bar will just spin in the middle and never touch the sides.
+- Instead, the magnetic rotor (the part sitting in the jar, driven by the external spinning magnet) needs a flexible arm or blade extending out to the jar's inner wall radius — like the flexible scraper fin on a stand mixer paddle — so it wipes dough off the sides as it turns.
+- The blade should be sized close to the jar's actual inner radius, with enough flex (silicone or thin spring steel) to press against the glass without binding or cracking the jar.
+- Because dough is much more viscous than what magnetic stirrers are normally designed for, expect to need more torque and lower RPM than a typical stir-plate setup — a slow deliberate sweep, not a fast spin, or the coupling may just slip/stall.
+- Small motor (N20 gear motor or repurposed PC fan motor) spins the external drive magnet below/beside the jar.
 - Driven via a transistor/MOSFET + PWM from the microcontroller so stir speed and duration are controllable, not just on/off.
 - Triggered automatically after a feed event, or on a timer, rather than continuously (continuous stirring isn't necessary and wastes power/battery).
 
@@ -52,10 +55,11 @@ Magnetic auto-stirring cup approach:
 5. Combine into one "needs feeding" rule (e.g., rise has fallen X% from peak AND gas trend flattening/dropping) and trigger the buzzer/LED.
 
 **Phase 2 — Magnetic stirrer**
-1. Bench-test the motor + magnet spinning a stir bar in a jar of water/flour paste before touching the live starter.
-2. Wire motor driver to ESP32, confirm PWM speed control works and doesn't interfere with sensor readings (motor noise/vibration can throw off load cell and ultrasonic readings — likely need to pause sensing while stirring).
-3. Trigger stir cycle automatically after a feed event (manual button press to mark "I fed it" is simplest v1 trigger), run for a fixed duration.
-4. Validate the starter doesn't get damaged (over-stirring can knock out gas/gluten structure) — start with short, gentle stir cycles and adjust.
+1. Prototype the scraper rotor first: test different blade materials/shapes (silicone fin vs. thin spring steel) against the actual jar you'll use, with a thick flour-water paste standing in for dough, to confirm it actually clears the walls without stalling.
+2. Bench-test the motor + drive magnet spinning that scraper rotor before touching the live starter.
+3. Wire motor driver to ESP32, confirm PWM speed control works and doesn't interfere with sensor readings (motor noise/vibration can throw off load cell and ultrasonic readings — likely need to pause sensing while stirring).
+4. Trigger stir cycle automatically after a feed event (manual button press to mark "I fed it" is simplest v1 trigger), run for a fixed duration.
+5. Validate the starter doesn't get damaged (over-stirring can knock out gas/gluten structure) — start with short, gentle stir cycles and adjust.
 
 **Phase 3 — Polish (optional stretch)**
 1. Add WiFi push notification (e.g., via a simple webhook) instead of only local buzzer.
@@ -63,6 +67,7 @@ Magnetic auto-stirring cup approach:
 3. 3D-print or hand-build a simple enclosure/stand for the sensors and motor.
 
 ## Open risks to watch
+- Stir bar alone won't work — dough is too thick/sticky to flow to the center. The scraper-blade rotor design needs its own prototyping pass before it's paired with sensors (see Phase 2, step 1).
 - Motor vibration/EMI may interfere with load cell and ultrasonic readings — plan to isolate mechanically or gate sensing around stir cycles.
 - MQ-135 needs a warm-up period (minutes) and drifts with humidity — treat readings as relative, not absolute, and recalibrate baseline each session.
 - Food-safety: anything touching the starter (stir bar, jar) should be food-safe/sealed; keep electronics physically isolated from the dough.
