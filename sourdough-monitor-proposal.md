@@ -1,5 +1,8 @@
 # Sourdough Monitor — Project Proposal
 
+# Tammy Nguyen Sep 29th, 2026
+# written with help from Claude
+
 ## Project overview
 An ESP32-based device that detects when a sourdough starter needs feeding (via rise, temperature, weight, and gas sensors) and auto-stirs it with a repurposed-tool stirring rig. Deliverable: a working sensor + stirrer rig with logged data proving it flags the peak across one full feed cycle.
 
